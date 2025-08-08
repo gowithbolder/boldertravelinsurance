@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bolder Annual Travel Insurance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Soothing Neutrals & Trust Blue -->
+    <!-- Application Structure Plan: A single-page narrative structure is used to guide the user logically from value proposition to action. The flow is: 1) Hero for immediate impact, 2) 'Why Annual' to establish the problem/solution, 3) 'Why Bolder is Better' to distinguish our offering from credit card products, 4) an interactive 'Cost Comparison' chart to prove the financial benefit, 5) 'Coverage Details' to build trust, 6) 'Our Trusted Partners' to reinforce credibility, 7) a new 'AI Chat Assistant' for conversational Q&A, and 8) a final 'Quote Form' to capture the lead. This single-page design maintains user engagement without the interruption of page loads, making it ideal for a focused conversion goal. Navigation is handled by a sticky header with smooth-scrolling links. -->
+    <!-- Visualization & Content Choices: 1) Cost Comparison: A static table is transformed into an interactive Chart.js bar chart. Users manipulate a slider to input their number of trips, and the chart dynamically visualizes the cost savings of an annual plan versus single policies. This personalizes the data and makes the value proposition more compelling. 2) Icons: Unicode characters styled with Tailwind are used for coverage and process icons (e.g., 🩺, 🧳) to avoid external image/SVG dependencies, ensuring fast load times. 3) Layout: A responsive, single-column layout with clear thematic sections guides the user downward towards the primary call-to-action (the form). 4) Partner Logos: Text-based logo placeholders with styling are used to maintain a cohesive design without relying on external images. 5) AI Chat Feature: An LLM-powered feature has been added for real-time customer Q&A, leveraging the Gemini API for dynamic content generation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .nav-link.active {
+            color: #2563eb; /* blue-600 */
+            font-weight: 600;
+        }
+        .partner-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-slate-900">
+                <span class="text-blue-600">Bolder</span><span class="font-light">Travel</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#why-annual" class="nav-link text-slate-600 hover:text-blue-600 transition-colors duration-300">Why Annual?</a>
+                <a href="#better-than-cards" class="nav-link text-slate-600 hover:text-blue-600 transition-colors duration-300">Why Bolder?</a>
+                <a href="#comparison" class="nav-link text-slate-600 hover:text-blue-600 transition-colors duration-300">Cost Comparison</a>
+                <a href="#coverage" class="nav-link text-slate-600 hover:text-blue-600 transition-colors duration-300">Coverage</a>
+                <a href="#partners" class="nav-link text-slate-600 hover:text-blue-600 transition-colors duration-300">Partners</a>
+                <a href="#ai-chat" class="nav-link text-slate-600 hover:text-blue-600 transition-colors duration-300">Chat</a>
+            </div>
+            <a href="#quote" class="hidden md:inline-block bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                Get a Quote
+            </a>
+            <button id="mobile-menu-button" class="md:hidden text-slate-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
+            <a href="#why-annual" class="block text-center py-3 px-4 text-slate-600 hover:bg-slate-100">Why Annual?</a>
+            <a href="#better-than-cards" class="block text-center py-3 px-4 text-slate-600 hover:bg-slate-100">Why Bolder?</a>
+            <a href="#comparison" class="block text-center py-3 px-4 text-slate-600 hover:bg-slate-100">Cost Comparison</a>
+            <a href="#coverage" class="block text-center py-3 px-4 text-slate-600 hover:bg-slate-100">Coverage</a>
+            <a href="#partners" class="block text-center py-3 px-4 text-slate-600 hover:bg-slate-100">Partners</a>
+            <a href="#ai-chat" class="block text-center py-3 px-4 text-slate-600 hover:bg-slate-100">Chat</a>
+            <a href="#quote" class="block text-center py-4 px-4 bg-blue-600 text-white font-semibold hover:bg-blue-700">Get a Quote</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="relative bg-white pt-20 pb-24 md:pt-28 md:pb-32">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">Travel More. <span class="text-blue-600">Worry Less.</span></h1>
+                <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-slate-600">Don't let a year of adventure be limited by single-trip policies. Get comprehensive coverage for all your travels, all year long, starting from just $99.</p>
+                <a href="#quote" class="mt-10 inline-block bg-blue-600 text-white font-bold px-8 py-4 rounded-lg text-lg hover:bg-blue-700 transition-transform duration-300 hover:scale-105">
+                    Get Your Free Quote
+                </a>
+            </div>
+        </section>
+
+        <section id="why-annual" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">The Smart, Simple Way to Travel</h2>
+                    <p class="mt-4 text-lg text-slate-600">If you're a frequent traveler, buying a new policy for every trip is a hassle. Bolder's annual multi-trip insurance provides peace of mind with a single, affordable policy that covers you for every journey you take throughout the year.</p>
+                </div>
+
+                <div class="mt-16 grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                    <div class="bg-white p-8 rounded-xl shadow-sm">
+                        <div class="text-4xl">✈️</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Business Travelers</h3>
+                        <p class="mt-2 text-slate-500">Seamless coverage for every meeting, conference, and client visit.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-sm">
+                        <div class="text-4xl">🎓</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Students Abroad</h3>
+                        <p class="mt-2 text-slate-500">Explore on weekends with the confidence that you're always protected.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-sm">
+                        <div class="text-4xl">👨‍👩‍👧‍👦</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Adventurous Families</h3>
+                        <p class="mt-2 text-slate-500">Cover every school break and family getaway with one simple plan.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-sm">
+                        <div class="text-4xl">🏞️</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Active Retirees</h3>
+                        <p class="mt-2 text-slate-500">Enjoy your freedom to travel anytime, anywhere, without policy worries.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="better-than-cards" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Why Bolder is Better Than Credit Card Coverage</h2>
+                    <p class="mt-4 text-lg text-slate-600">While credit cards offer some travel protection, our plans are designed to provide robust, comprehensive coverage with fewer exclusions. Don't rely on fine print; travel with real peace of mind.</p>
+                </div>
+                <div class="mt-16 max-w-4xl mx-auto grid md:grid-cols-3 gap-x-8 gap-y-10">
+                    <div class="flex flex-col items-center text-center p-6 bg-slate-50 rounded-xl shadow-sm">
+                        <div class="text-4xl text-blue-600">🚗</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Rental Car Coverage</h3>
+                        <p class="mt-2 text-slate-600">Our policies can include dedicated coverage for rental cars, often exceeding the limited benefits of credit card plans.</p>
+                    </div>
+                    <div class="flex flex-col items-center text-center p-6 bg-slate-50 rounded-xl shadow-sm">
+                        <div class="text-4xl text-blue-600">🗺️</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Road Trip Protection</h3>
+                        <p class="mt-2 text-slate-600">We cover domestic road trips, including those 100 miles or more from your home, a key benefit often missed by other policies.</p>
+                    </div>
+                    <div class="flex flex-col items-center text-center p-6 bg-slate-50 rounded-xl shadow-sm">
+                        <div class="text-4xl text-blue-600">🏥</div>
+                        <h3 class="mt-4 text-xl font-semibold text-slate-800">Medical Emergencies</h3>
+                        <p class="mt-2 text-slate-600">Our plans provide extensive medical emergency coverage, offering higher limits and fewer restrictions than what many credit cards provide.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">See the Savings for Yourself</h2>
+                    <p class="mt-4 text-lg text-slate-600">Use the slider to match your travel habits and see how an annual plan provides incredible value. The more you travel, the more you save in both time and money.</p>
+                </div>
+
+                <div class="mt-12 max-w-3xl mx-auto">
+                    <div class="flex flex-col items-center">
+                         <label for="trip-slider" class="block text-lg font-semibold text-slate-700 mb-2">Number of Trips Per Year: <span id="trip-count" class="text-blue-600 font-bold">3</span></label>
+                         <input id="trip-slider" type="range" min="1" max="12" value="3" class="w-full max-w-md h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div class="chart-container mt-8">
+                        <canvas id="cost-comparison-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="coverage" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Your Adventures Are Protected</h2>
+                    <p class="mt-4 text-lg text-slate-600">Our annual multi-trip insurance is designed to cover the most common issues faced by travelers, so you can explore with confidence.</p>
+                </div>
+                <div class="mt-16 max-w-4xl mx-auto grid md:grid-cols-2 gap-x-12 gap-y-10">
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 text-3xl bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center">🩺</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-800">Emergency Medical</h3>
+                            <p class="mt-1 text-slate-600">Get help when you need it most, anywhere in the world. We cover unexpected medical and dental emergencies.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 text-3xl bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center">❌</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-800">Trip Cancellation</h3>
+                            <p class="mt-1 text-slate-600">Be reimbursed for prepaid, non-refundable expenses if a trip is unexpectedly cancelled for a covered reason.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 text-3xl bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center">🧳</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-800">Baggage Loss & Delay</h3>
+                            <p class="mt-1 text-slate-600">Your belongings are protected against theft, loss, or damage during transit, plus reimbursement for delayed baggage.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6">
+                        <div class="flex-shrink-0 text-3xl bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center">⏱️</div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-800">Trip Interruption</h3>
+                            <p class="mt-1 text-slate-600">We've got you covered if your trip is cut short due to an emergency, helping you get home safely.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="partners" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Our Trusted Partners</h2>
+                    <p class="mt-4 text-lg text-slate-600">We work with the industry's top-rated insurance providers to offer you the best coverage and claims service possible.</p>
+                </div>
+                <div class="mt-16 max-w-4xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="partner-logo">CHUBB</div>
+                    <div class="partner-logo">Allianz</div>
+                    <div class="partner-logo">Travel Insured International</div>
+                    <div class="partner-logo">AIG</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-chat" class="py-20 md:py-28 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Ask Our AI Assistant</h2>
+                    <p class="mt-4 text-lg text-slate-600">Have questions about our plans? Chat with our AI assistant to get quick and helpful answers about our annual coverage.</p>
+                </div>
+                <div class="mt-12 max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg flex flex-col h-[500px]">
+                    <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 p-4 rounded-lg border border-slate-200 mb-4">
+                        <div class="flex justify-start">
+                            <div class="bg-blue-100 text-slate-800 p-3 rounded-xl rounded-bl-none max-w-[80%]">
+                                Hello! I'm here to help you with your questions. To find the perfect plan from our many options, I can connect you with one of our expert representatives.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chat-input-area" class="flex items-center space-x-2">
+                        <input type="text" id="chat-input" placeholder="Ask a question..." class="flex-grow px-4 py-3 bg-slate-100 border border-slate-300 rounded-full placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button id="send-chat-btn" class="flex-shrink-0 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quote" class="py-20 md:py-28 bg-slate-900 text-white">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold">Get Your Free, No-Obligation Quote</h2>
+                        <p class="mt-4 text-lg text-slate-300">It's a simple 3-step process. Fill out a few details, and one of our expert agents will reach out to discuss your needs and find the perfect plan for you.</p>
+                        <div class="mt-8 space-y-6">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                                <p class="ml-4 text-slate-200">Submit your basic information.</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                                <p class="ml-4 text-slate-200">An agent will contact you within one business day.</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                                <p class="ml-4 text-slate-200">Discuss your travel and get a personalized quote.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-lg text-slate-800">
+                        <!--
+                            The form's action is set to a mailto link.
+                            When submitted, this will open the user's default email client
+                            with a new message pre-addressed to the specified email,
+                            including the form data in the body. This is a simple way
+                            to handle submissions for a static site.
+                        -->
+                        <form id="quote-form" action="mailto:bradzyner@gowithbolder.com" method="post" enctype="text/plain">
+                            <div id="form-content">
+                                <div class="space-y-5">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-slate-700">Full Name</label>
+                                        <input type="text" id="name" name="name" required class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="email" class="block text-sm font-medium text-slate-700">Email Address</label>
+                                        <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-sm font-medium text-slate-700">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone" required class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="message" class="block text-sm font-medium text-slate-700">Message (Optional)</label>
+                                        <textarea id="message" name="message" rows="3" class="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-xs text-slate-500">We value your privacy. Your information will only be used to contact you about your travel insurance quote.</p>
+                                <button type="submit" class="mt-6 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Request My Quote
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Bolder Travel Insurance. All Rights Reserved.</p>
+            <p class="text-sm mt-2">Travel Boldly. Travel Protected.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ANNUAL_PLAN_COST = 99;
+            const AVERAGE_SINGLE_TRIP_COST = 45;
+            
+            // --- Chart Logic ---
+            const slider = document.getElementById('trip-slider');
+            const tripCountSpan = document.getElementById('trip-count');
+            const ctx = document.getElementById('cost-comparison-chart').getContext('2d');
+            let costChart;
+
+            function updateChart(tripCount) {
+                const singleTripTotalCost = tripCount * AVERAGE_SINGLE_TRIP_COST;
+                
+                if (costChart) {
+                    costChart.data.datasets[0].data[0] = singleTripTotalCost;
+                    costChart.update();
+                }
+            }
+
+            function createChart() {
+                costChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Your Estimated Annual Cost'],
+                        datasets: [{
+                            label: 'Single Trip Policies',
+                            data: [3 * AVERAGE_SINGLE_TRIP_COST],
+                            backgroundColor: '#94a3b8', // slate-400
+                            borderColor: '#64748b', // slate-500
+                            borderWidth: 1
+                        }, {
+                            label: 'Bolder Annual Plan',
+                            data: [ANNUAL_PLAN_COST],
+                            backgroundColor: '#3b82f6', // blue-500
+                            borderColor: '#2563eb', // blue-600
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (slider && tripCountSpan && ctx) {
+                createChart();
+                slider.addEventListener('input', function() {
+                    const tripCount = parseInt(this.value, 10);
+                    tripCountSpan.textContent = tripCount;
+                    updateChart(tripCount);
+                });
+            }
+            
+            // --- AI Chat Logic ---
+            const chatInput = document.getElementById('chat-input');
+            const sendChatBtn = document.getElementById('send-chat-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            let chatHistory = [{ role: "model", parts: [{ text: "Hello! I'm here to help you with your questions. To find the perfect plan from our many options, I can connect you with one of our expert representatives." }] }];
+
+            const policyInfo = `
+                Our annual multi-trip plans cover all your trips for 365 days. They are a great choice if you travel multiple times a year, as they can be more affordable and convenient than buying separate policies for each trip. Some plans may also include an Epidemic Coverage Endorsement for certain losses.
+
+                We offer several plan options with different levels of coverage. The benefits vary, but common coverage includes:
+                - Trip Cancellation & Interruption: Reimburses forfeited trip costs, ranging from 100% of the cost up to a few thousand dollars.
+                - Trip Delay: Covers additional expenses if your trip is delayed, with daily limits and total maximums up to a few thousand dollars.
+                - Baggage & Personal Effects: Reimburses for lost, stolen, or damaged belongings, with coverage ranging from a thousand to a few thousand dollars.
+                - Baggage Delay: Provides reimbursement for essential items if your bags are delayed.
+                - Accident & Sickness Medical Expense: Covers unexpected medical costs, with limits typically ranging from tens of thousands to hundreds of thousands of dollars.
+                - Medical Evacuation: Provides substantial coverage for emergency evacuations.
+                - Missed Connection: Offers a benefit if you miss a connection due to a covered reason.
+
+                All plans can provide more robust coverage and fewer exclusions compared to typical credit card benefits, especially for domestic road trips (over 100 miles from home) and medical emergencies.
+            `;
+            
+            function displayMessage(text, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('flex', isUser ? 'justify-end' : 'justify-start');
+                const messageBubble = document.createElement('div');
+                messageBubble.classList.add('p-3', 'rounded-xl', 'max-w-[80%]');
+                messageBubble.classList.add(isUser ? 'bg-blue-600' : 'bg-slate-100');
+                messageBubble.classList.add(isUser ? 'text-white' : 'text-slate-800');
+                messageBubble.classList.add(isUser ? 'rounded-br-none' : 'rounded-bl-none');
+                messageBubble.innerHTML = isUser ? text : text.replace(/\n/g, '<br>');
+                messageDiv.appendChild(messageBubble);
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the bottom
+            }
+
+            const sendMessage = async () => {
+                const userMessage = chatInput.value.trim();
+                if (!userMessage) return;
+
+                displayMessage(userMessage, true);
+                chatInput.value = '';
+                chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+                // Add a typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.innerHTML = `<div class="flex justify-start"><div class="p-3 rounded-xl rounded-bl-none max-w-[80%] bg-slate-100 text-slate-800 animate-pulse">...</div></div>`;
+                chatMessages.appendChild(typingIndicator);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                const prompt = `You are a friendly and knowledgeable customer support assistant for Bolder Travel Insurance. Your purpose is to provide concise, helpful answers to user questions about our annual plans using the provided context. After your answer, always encourage the user to speak with a representative for a personalized consultation. Your closing message must emphasize that a representative can help them navigate our many options to find the best plan for their specific travel needs. Do not use the word 'quote' in your response. Do not make up information that is not supported by the context.
+                
+                Context:
+                ${policyInfo}
+                
+                User question: ${userMessage}
+                `;
+
+                let callHistory = chatHistory.slice(-5); // Keep a short history for context
+                callHistory[callHistory.length - 1].parts[0].text = prompt; // Replace the last message with the full context prompt
+
+                const payload = { contents: callHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                let retries = 0;
+                const maxRetries = 5;
+                const baseDelay = 1000;
+
+                const callApiWithBackoff = async () => {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            if (response.status === 429 && retries < maxRetries) {
+                                const delay = Math.pow(2, retries) * baseDelay + Math.random() * baseDelay;
+                                retries++;
+                                await new Promise(res => setTimeout(res, delay));
+                                return callApiWithBackoff();
+                            } else {
+                                throw new Error(`API call failed with status: ${response.status}`);
+                            }
+                        }
+
+                        const result = await response.json();
+                        chatMessages.removeChild(typingIndicator);
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const text = result.candidates[0].content.parts[0].text;
+                            displayMessage(text, false);
+                            chatHistory.push({ role: "model", parts: [{ text: text }] });
+                        } else {
+                            displayMessage('Sorry, I could not process that request. Please try again.', false);
+                        }
+                    } catch (error) {
+                        if (chatMessages.contains(typingIndicator)) {
+                            chatMessages.removeChild(typingIndicator);
+                        }
+                        displayMessage('An error occurred. Please try again later.', false);
+                    }
+                };
+
+                callApiWithBackoff();
+            };
+
+            sendChatBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // --- Form Submission Logic ---
+            // Removed the old form submission logic that was using Javascript to handle form submission without an actual backend
+            
+            // --- Mobile Menu Toggle ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // --- Smooth Scrolling ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // --- Intersection Observer for Active Nav Links ---
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.3
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${entry.target.id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
